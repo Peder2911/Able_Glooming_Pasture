@@ -1,0 +1,6 @@
+[submodule "CountryInfo"]
+  path = resources/CountryInfo
+  url = https://github.com/Peder2911/CountryInfo
+[submodule "resources/CountryInfo"]
+	path = resources/CountryInfo
+	url = https://github.com/Peder2911/CountryInfo
