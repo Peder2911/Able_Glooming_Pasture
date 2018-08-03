@@ -27,8 +27,7 @@ def pipeProcess(interpreter,file,arguments=[],logger=None,**kwargs):
                 logger.critical(p.stderr.decode())
             raise subprocess.CalledProcessError
 
-        stderr = p.stderr.decode().strip()
-        if stderr != '' and not logger is None:
-            logger.debug(stderr)
+        stderr = p.stderr.decode()
+        logger.debug(stderr)
 
         return(p)

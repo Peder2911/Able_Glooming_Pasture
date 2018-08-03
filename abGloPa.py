@@ -27,36 +27,43 @@ with open(logConf) as file:
 dictConfig(logConf)
 
 fl = logging.getLogger('base_file')
+cl = logging.getLogger('base_console')
 
 #####################################
 
 class pipes():
-    def clean(self):
-        #FIXME
+    def clean(self): #FIXME
         script = util.relPath('./pipes/cleaner.py',__file__)
+
         p = util.pipeProcess('python',script,
-                             logger = fl,input = sys.stdin.read().encode())
+                             logger = fl,
+                             input = sys.stdin.read().encode())
+
         sys.stdout.write(p.stdout.decode())
 
     def stem(self):
         script = util.relPath('./pipes/stemmer.py',__file__)
+
         p = util.pipeProcess('python',script,
-                             logger = fl,input = sys.stdin.read().encode())
+                             logger = fl,
+                             input = sys.stdin.read().encode())
+
         sys.stdout.write(p.stdout.decode())
 
     def ner(self):
         script = util.relPath('./pipes/simpleNer.py',__file__)
 
-        dataPath = os.path.abspath('resources/data/names.csv')
+        dataPath = util.relPath('./resources/data/names.csv',__file__)
+        dataPath = os.path.abspath(dataPath)
 
         p = util.pipeProcess('python',script,
                              logger = fl,
                              input = sys.stdin.read().encode(),
                              arguments = [dataPath])
+
         sys.stdout.write(p.stdout.decode())
 
-    def synonyms(self):
-        #FIXME
+    def synonyms(self): #FIXME
         pass
 
 

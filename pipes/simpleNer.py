@@ -3,10 +3,14 @@ import sys
 import re
 import csv
 
+import logging
+
 def nerTokenize(line,data):
     def reIfy(name):
         # General format = firstName_name_sirName_
-        name = name.replace('_',r'[\-\.\'\´ ]*')
+        #name = name.replace('_',r'[\-\.\'\´ ]*')
+        name = name.replace('_',r'[\-\.\'\´ ^$]+')
+        name = r'(^| )' + name + r'($| )'
         if '|' in name:
             name = '(%s)'%name
         return(name)
@@ -26,7 +30,11 @@ def nerTokenize(line,data):
         if found and entry != '':
             pattern = reIfy(entry)
             pattern = re.compile(pattern,flags = re.IGNORECASE)
-            line = re.sub(pattern,' '+data[entry]+' ',line)
+            match = re.search(pattern,line)
+            if match:
+                sys.stderr.write(match[0] + ' to ' + data[entry] + '\n')
+                sys.stderr.write(line + '\n')
+                line = re.sub(pattern,' '+data[entry]+' ',line)
 
     return(line)
 
