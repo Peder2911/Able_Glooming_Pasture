@@ -2,21 +2,19 @@
 import nltk
 
 import sys
+import re
 
 PStemmer = nltk.PorterStemmer()
 
 #####################################################
-
+#FIXME
 if __name__ == '__main__':
 
     line = 'init'
     while line != '':
         line = sys.stdin.readline()
         if line != '':
-            words = [word.strip() for word in line.split(' ')]
-            words = [PStemmer.stem(word) for word in words]
-
-            outLine = ' '.join(words) + '\n'
-            sys.stdout.write(outLine)
+            line = re.sub(r'a','e',line)
+            sys.stdout.write(line)
         else:
             pass

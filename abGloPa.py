@@ -4,6 +4,7 @@ import fire
 
 import subprocess
 import sys
+import os
 
 from fun import util
 
@@ -31,15 +32,31 @@ fl = logging.getLogger('base_file')
 
 class pipes():
     def clean(self):
-        pass
+        #FIXME
+        script = util.relPath('./pipes/cleaner.py',__file__)
+        p = util.pipeProcess('python',script,
+                             logger = fl,input = sys.stdin.read().encode())
+        sys.stdout.write(p.stdout.decode())
+
     def stem(self):
         script = util.relPath('./pipes/stemmer.py',__file__)
         p = util.pipeProcess('python',script,
                              logger = fl,input = sys.stdin.read().encode())
         sys.stdout.write(p.stdout.decode())
-    def ner_tokenize(self):
-        pass
+
+    def ner(self):
+        script = util.relPath('./pipes/simpleNer.py',__file__)
+
+        dataPath = os.path.abspath('resources/data/names.csv')
+
+        p = util.pipeProcess('python',script,
+                             logger = fl,
+                             input = sys.stdin.read().encode(),
+                             arguments = [dataPath])
+        sys.stdout.write(p.stdout.decode())
+
     def synonyms(self):
+        #FIXME
         pass
 
 
