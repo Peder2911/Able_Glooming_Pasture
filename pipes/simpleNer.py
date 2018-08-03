@@ -10,9 +10,9 @@ def nerTokenize(line,data):
         # General format = firstName_name_sirName_
         #name = name.replace('_',r'[\-\.\'\´ ]*')
         name = name.replace('_',r'[\-\.\'\´ ^$]+')
-        name = r'(^| )' + name + r'($| )'
         if '|' in name:
-            name = '(%s)'%name
+            name = '(%s)'%name    
+        name = r'(^| )' + name + r'($| )'
         return(name)
 
     sLine = re.sub('[^a-z]','_',line.lower())
