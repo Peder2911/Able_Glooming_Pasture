@@ -29,6 +29,16 @@ dictConfig(logConf)
 fl = logging.getLogger('base_file')
 cl = logging.getLogger('base_console')
 
+def processField(data,field,function):
+    result = []
+    for row in data:
+        row[field] = function(row[field])
+        result.append(row)
+    return(result)
+
+def pipeProcessText():
+    
+
 #####################################
 
 class pipes():
@@ -40,7 +50,7 @@ class pipes():
         self.data = json.load(sys.stdin)
         self.field = field
 
-    def clean(self): #FIXME
+    def charsOnly(self): #FIXME
         script = util.relPath('./pipes/cleaner.py',__file__)
 
         p = util.pipeProcess('python',script,
@@ -71,11 +81,7 @@ class pipes():
                                  arguments = [dataPath])
             return(p.stdout.decode())
 
-        result = []
-        for row in self.data:
-            row[self.field] = nerProcess(row[self.field])
-            result.append(row)
-
+        result = processField(self.data,self.field,nerProcess)
         json.dump(result,sys.stdout)
 
     def synonyms(self): #FIXME
