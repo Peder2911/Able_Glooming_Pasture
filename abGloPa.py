@@ -6,7 +6,7 @@ import subprocess
 import sys
 import os
 
-from fun import util
+from lib import util
 
 
 #####################################
@@ -32,12 +32,20 @@ cl = logging.getLogger('base_console')
 #####################################
 
 class pipes():
+    def __init__(self,field = 'body'):
+        '''
+        Accepts data in .json format
+        '''
+
+        self.data = json.load(sys.stdin)
+        self.field = field
+
     def clean(self): #FIXME
         script = util.relPath('./pipes/cleaner.py',__file__)
 
         p = util.pipeProcess('python',script,
                              logger = fl,
-                             input = sys.stdin.read().encode())
+                             input = self.data.encode())
 
         sys.stdout.write(p.stdout.decode())
 
@@ -46,22 +54,29 @@ class pipes():
 
         p = util.pipeProcess('python',script,
                              logger = fl,
-                             input = sys.stdin.read().encode())
+                             input = self.data.encode())
 
         sys.stdout.write(p.stdout.decode())
 
     def ner(self):
-        script = util.relPath('./pipes/simpleNer.py',__file__)
 
+        script = util.relPath('./pipes/simpleNer.py',__file__)
         dataPath = util.relPath('./resources/data/names.csv',__file__)
         dataPath = os.path.abspath(dataPath)
 
-        p = util.pipeProcess('python',script,
-                             logger = fl,
-                             input = sys.stdin.read().encode(),
-                             arguments = [dataPath])
+        def nerProcess(text):
+            p = util.pipeProcess('python',script,
+                                 logger = fl,
+                                 input = text.encode(),
+                                 arguments = [dataPath])
+            return(p.stdout.decode())
 
-        sys.stdout.write(p.stdout.decode())
+        result = []
+        for row in self.data:
+            row[self.field] = nerProcess(row[self.field])
+            result.append(row)
+
+        json.dump(result,sys.stdout)
 
     def synonyms(self): #FIXME
         pass

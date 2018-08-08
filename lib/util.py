@@ -31,3 +31,29 @@ def pipeProcess(interpreter,file,arguments=[],logger=None,**kwargs):
         logger.debug(stderr)
 
         return(p)
+
+#####################################
+
+def stringToStdFormat(string):
+    
+    '''
+    Converts a csv. formatted string into the list-of-dictionaries format
+    used by Diverse_Folio_Isle and Able_Glooming_Pasture
+    '''
+
+    fauxFile = StringIO(string)
+
+    with fauxFile as csvFile:
+        reader = csv.reader(csvFile)
+        names = next(reader)
+
+        result = []
+        for line in reader:
+
+            lineResult = {}
+            for n,entry in enumerate(line):
+                lineResult.update({names[n]:entry})
+
+            result.append(lineResult)
+
+    return(result)
